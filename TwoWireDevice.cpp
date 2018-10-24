@@ -4,20 +4,12 @@
 #include <stdio.h>
 //#include <math.h>
 
-TwoWireDevice::TwoWireDevice(TwoWire *theWire, const uint8_t addr)
+TwoWireDevice::TwoWireDevice(TwoWire *wire, const uint8_t addr) : _i2caddr(addr), _wire(wire)
 {
-    _i2caddr = addr;
-	_wire = theWire;
-
-    // _wire->begin();
 }
 
-TwoWireDevice::TwoWireDevice(const uint8_t addr)
+TwoWireDevice::TwoWireDevice(const uint8_t addr) : _i2caddr(addr), _wire(&Wire)
 {
-	_i2caddr = addr;
-	_wire = &Wire;
-
-    // _wire->begin();
 }
 
 bool TwoWireDevice::begin()
@@ -25,6 +17,7 @@ bool TwoWireDevice::begin()
     _wire->begin();
     return true;
 }
+
 /**************************************************************************/
 /*!
     @brief  write one byte of data to the specified register
@@ -70,21 +63,21 @@ uint8_t TwoWireDevice::read8(const uint8_t reg)
 
 uint16_t TwoWireDevice::read16(const uint8_t reg)
 {
-    _wire -> beginTransmission((uint8_t)_i2caddr);
-    _wire -> write((uint8_t)reg);
+    _wire -> beginTransmission(_i2caddr);
+    _wire -> write(reg);
     _wire -> endTransmission();
-    _wire -> requestFrom((uint8_t)_i2caddr, (uint8_t)2);
+    _wire -> requestFrom(_i2caddr, 2);
     return ((_wire -> read() << 8) | _wire -> read());
 }
 
-uint32_t TwoWireDevice::read24(byte reg)
+uint32_t TwoWireDevice::read24(const uint8_t reg)
 {
     uint32_t value;
 
-    _wire -> beginTransmission((uint8_t)_i2caddr);
-    _wire -> write((uint8_t)reg);
+    _wire -> beginTransmission(_i2caddr);
+    _wire -> write(reg);
     _wire -> endTransmission();
-    _wire -> requestFrom((uint8_t)_i2caddr, (uint8_t) 3);
+    _wire -> requestFrom(_i2caddr, 3);
 
     value = _wire->read();
     value <<= 8;
@@ -103,11 +96,11 @@ void TwoWireDevice::read(const uint8_t reg, uint8_t *buf, const uint8_t num)
 	//on arduino we need to read in 32 byte chunks
 	while(pos < num)
     {
-		uint8_t read_now = min((uint8_t)32, (uint8_t)(num - pos));
-		_wire->beginTransmission((uint8_t)_i2caddr);
-		_wire->write((uint8_t)reg + pos);
+		uint8_t read_now = min(32, (num - pos));
+		_wire->beginTransmission(_i2caddr);
+		_wire->write(reg + pos);
 		_wire->endTransmission();
-		_wire->requestFrom((uint8_t)_i2caddr, read_now);
+		_wire->requestFrom(_i2caddr, read_now);
 
 		for(int i=0; i<read_now; i++)
         {
@@ -119,7 +112,7 @@ void TwoWireDevice::read(const uint8_t reg, uint8_t *buf, const uint8_t num)
 
 void TwoWireDevice::write(const uint8_t reg, const uint8_t *buf, const uint8_t num)
 {
-	_wire->beginTransmission((uint8_t)_i2caddr);
+	_wire->beginTransmission(_i2caddr);
 	_wire->write(reg);
 	_wire->write(buf, num);
 	_wire->endTransmission();
