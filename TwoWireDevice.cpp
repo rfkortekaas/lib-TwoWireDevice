@@ -66,7 +66,7 @@ uint16_t TwoWireDevice::read16(const uint8_t reg)
     _wire -> beginTransmission(_i2caddr);
     _wire -> write(reg);
     _wire -> endTransmission();
-    _wire -> requestFrom(_i2caddr, 2);
+    _wire -> requestFrom(_i2caddr, (uint8_t)2);
     return ((_wire -> read() << 8) | _wire -> read());
 }
 
@@ -77,7 +77,7 @@ uint32_t TwoWireDevice::read24(const uint8_t reg)
     _wire -> beginTransmission(_i2caddr);
     _wire -> write(reg);
     _wire -> endTransmission();
-    _wire -> requestFrom(_i2caddr, 3);
+    _wire -> requestFrom(_i2caddr, (uint8_t)3);
 
     value = _wire->read();
     value <<= 8;
