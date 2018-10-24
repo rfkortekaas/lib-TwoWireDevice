@@ -13,8 +13,6 @@ class TwoWireDevice
         TwoWireDevice(TwoWire*, const uint8_t addr);
 
         bool begin();
-        //bool begin(const uint8_t addr);
-        //bool begin(TwoWire*, const uint8_t addr);
 
     protected:
 
