@@ -15,17 +15,20 @@ class TwoWireDevice
         bool begin();
 
     protected:
+        uint8_t   read8();
+        void      write8(const uint8_t data);
 
-        void read(const uint8_t reg, uint8_t *buf, const uint8_t num);
-        void write(const uint8_t reg, const uint8_t *buf, const uint8_t num);
+		// Register Type devices
+        void 	  readreg(const uint8_t reg, uint8_t *buf, const uint8_t num);
+        void 	  writereg(const uint8_t reg, const uint8_t *buf, const uint8_t num);
 
-        uint8_t   read8(const uint8_t reg);
-        void      write8(const uint8_t reg, const uint8_t value);
+        uint8_t   readreg8(const uint8_t reg);
+        void      writereg8(const uint8_t reg, const uint8_t value);
 
-        uint16_t  read16(const uint8_t reg);
-        void      write16(const uint8_t reg, const uint16_t value);
+        uint16_t  readreg16(const uint8_t reg);
+        void      writereg16(const uint8_t reg, const uint16_t value);
 
-        uint32_t  read24(const uint8_t reg);
+        uint32_t  readreg24(const uint8_t reg);
 
         uint8_t _i2caddr;
         TwoWire& _wire = Wire;
