@@ -134,7 +134,7 @@ void TwoWireDevice::writereg16(const uint8_t reg, const uint16_t value)
 {
 	_wire.beginTransmission(_i2caddr);
 	_wire.write(reg);
-	_wire.write(value & 0xFF);
-    _wire.write((value & 0xFF00) >> 8);
+	_wire.write((value & 0xFF00) >> 8);
+    _wire.write(value & 0xFF);
 	_wire.endTransmission();
 }
